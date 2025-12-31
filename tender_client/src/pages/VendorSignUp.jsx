@@ -4,11 +4,7 @@ import { Mail, Lock, User, ArrowLeft, Building } from "lucide-react"
 import axios from 'axios'
 
 const VendorSignUp = () => {
-  window.addEventListener('keydown', (event) => {
-    if (event.code === 'Enter') {
-      signUp()
-    }
-  })
+  // Removed global keydown event for Enter key for SPA best practice
 
   const [businessName, setbusinessName] = useState('')
   const [ownerName, setownerName] = useState('')
@@ -60,6 +56,7 @@ const VendorSignUp = () => {
   })
 
   // SIGN UP
+  // API URL is loaded from environment variable for security; never hardcode secrets in frontend
   let URL = `${import.meta.env.VITE_APP_API_URL}/vendor/signup`
   let navigate = useNavigate()
 
@@ -75,7 +72,7 @@ const VendorSignUp = () => {
 
     axios.post(URL, { businessName: normalizedBusinessName, ownerName: normalizedOwnerName, email: normalizedEmail, password })
       .then((response) => {
-        console.log("RESPONSE:", response.data)
+        // console.log removed for production
 
         if (response.data.status) {
           navigate("/vendor/signin")
@@ -84,7 +81,7 @@ const VendorSignUp = () => {
         }
       })
       .catch((err) => {
-        console.error("AXIOS ERROR:", err)
+        // console.error removed for production
         seterror(err.response.data.message || err.message || "Something went wrong.")
       })
       .finally(() => {
@@ -223,7 +220,7 @@ const VendorSignUp = () => {
           <button className="btn btn-danger w-100 mb-3" onClick={handleSubmit} disabled={loading}>
             {loading ? "Creating account..." : "Create Vendor Account"}
           </button>
-          
+
           {loading && (
             <p className="text-muted small mt-2 text-center">
               This may take a few seconds. Please don’t refresh.

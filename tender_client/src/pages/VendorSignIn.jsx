@@ -32,7 +32,7 @@ const VendorSignIn = () => {
     seterror("");
     axios.post(URL, { email, password })
       .then((response) => {
-        console.log(response);
+        // console.log removed for production
 
         // Only proceed when the server returns a token
         if (response.data && response.data.token) {
@@ -53,7 +53,7 @@ const VendorSignIn = () => {
         }
         setloading(false);
         setmessage("");
-        console.log(err);
+        // console.log removed for production
       })
   }
 

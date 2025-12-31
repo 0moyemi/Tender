@@ -37,11 +37,11 @@ const Marketplace = () => {
       .then((res) => {
         if (res.data.status) {
           setproducts(res.data.message || [])
-          console.log(res.data)
+          // console.log removed for production
         }
       })
       .catch((err) => {
-        console.log(err)
+        // console.log removed for production
       })
       .finally(() => setLoading(false));
   }

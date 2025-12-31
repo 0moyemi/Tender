@@ -50,7 +50,7 @@ const VendorDashboard = () => {
     if (e) e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) {
-      console.log("Token not found.");
+      // console.log removed for production
       return;
     }
     const URL = editingId ? `${import.meta.env.VITE_APP_API_URL}/vendor/dashboard/${editingId}` : `${import.meta.env.VITE_APP_API_URL}/vendor/dashboard`;
@@ -67,16 +67,16 @@ const VendorDashboard = () => {
     })
       .then((response) => {
         if (response.data.status) {
-          console.log(editingId ? "Product updated!" : "Product uploaded successfully!");
+          // console.log removed for production
           setformData({ name: '', price: '', image: '', description: '', category: '', features: '' });
           seteditingId(null);
           fetchProducts();
         } else {
-          console.log("Failed to upload products: " + response.data.message);
+          // console.log removed for production
         }
       })
       .catch((err) => {
-        console.log(err);
+        // console.log removed for production
       });
   }
 
@@ -87,16 +87,16 @@ const VendorDashboard = () => {
 
     axios.get(URL, getAuthHeader())
       .then((response) => {
-        console.log("Fetch products response:", response.data);
+        // console.log removed for production
         if (response.data.products) {
           setproducts(response.data.products)
-          console.log("Products loaded:", response.data.products.length);
+          // console.log removed for production
         } else {
-          console.log("No products found in response:", response.data);
+          // console.log removed for production
         }
       })
       .catch((err) => {
-        console.log("Error fetching products:", err)
+        // console.log removed for production
       })
 
   }
@@ -120,7 +120,7 @@ const VendorDashboard = () => {
         }
       })
       .catch((err) => {
-        console.log('DEBUG useEffect catch block error:', err);
+        // console.log removed for production
         // If error is 401/403 or message contains 'unauthorized', clear token and redirect
         if (
           (err.response && (err.response.status === 401 || err.response.status === 403)) ||
@@ -130,7 +130,7 @@ const VendorDashboard = () => {
           navigate("/vendor/signin")
         } else {
           // Log other errors for debugging
-          console.log(err)
+          // console.log removed for production
         }
       })
   }, [])
@@ -147,7 +147,7 @@ const VendorDashboard = () => {
         fetchProducts()
       })
       .catch((err) => {
-        console.log(err)
+        // console.log removed for production
       })
   }
 
@@ -169,7 +169,7 @@ const VendorDashboard = () => {
       <nav className="navbar navbar-dark border-bottom border-secondary">
         <div className="container-fluid d-flex justify-content-between align-items-center">
           <Link to="/" className="navbar-brand p-0 m-0">
-          <img src="https://i.postimg.cc/pVnM03Gg/New-Tender.png" width={80} className="navbar-brand mb-0 h1" alt="" />
+            <img src="https://i.postimg.cc/pVnM03Gg/New-Tender.png" width={80} className="navbar-brand mb-0 h1" alt="" />
           </Link>
           <div className="d-flex align-items-center gap-3">
             <span className="text-white small d-none d-md-inline">Vendor Panel</span>

@@ -18,7 +18,7 @@ const ProductDetails = () => {
         setproduct(res.data.product)
       })
       .catch((err) => {
-        console.log(err.message)
+        // console.log removed for production
       })
   }, [_id])
 
@@ -49,7 +49,7 @@ const ProductDetails = () => {
       <nav className="navbar navbar-dark border-bottom border-secondary">
         <div className="container d-flex justify-content-between align-items-center">
           <Link to="/" className="navbar-brand p-0 m-0">
-          <img src="https://i.postimg.cc/pVnM03Gg/New-Tender.png" width={80} className="navbar-brand mb-0 h1" alt="" />
+            <img src="https://i.postimg.cc/pVnM03Gg/New-Tender.png" width={80} className="navbar-brand mb-0 h1" alt="" />
             <img src="/images/tender.png" alt="Tender" height="30" />
           </Link>
           <div className="d-flex align-items-center gap-3">

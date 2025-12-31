@@ -37,7 +37,7 @@ const AdminDashboard = () => {
           localStorage.removeItem('adminToken');
           navigate('/admin/login');
         } else {
-          console.log(err)
+          // console.log removed for production
         }
       })
   }
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
         if (res.data && res.data.status) {
           setvendors(prev => prev.filter(v => v._id !== _id))
         } else {
-          console.warn('deleteVendor: unexpected response', res.data)
+          // console.warn removed for production
         }
         closeSuspendModal();
       })
@@ -68,7 +68,7 @@ const AdminDashboard = () => {
           localStorage.removeItem('adminToken');
           navigate('/admin/login');
         } else {
-          console.error('deleteVendor error:', err.response || err.message || err)
+          // console.error removed for production
         }
         closeSuspendModal();
       })
@@ -101,7 +101,7 @@ const AdminDashboard = () => {
           localStorage.removeItem('adminToken');
           navigate('/admin/login');
         } else {
-          console.error('editVendor error:', err.response || err.message || err);
+          // console.error removed for production
         }
       });
   }
