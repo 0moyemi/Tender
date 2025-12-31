@@ -29,7 +29,7 @@ const signUp = (req, res) => {
 
             // Otherwise
             form.save().then(() => {
-                console.log("Saved successfully.")
+                // ...removed dev artifact...
 
 
                 // NODEMAILER:
@@ -97,10 +97,10 @@ const signUp = (req, res) => {
 
                 transporter.sendMail(mailOptions)
                     .then((response) => {
-                        console.log('Welcome email sent:', response)
+                        // ...removed dev artifact...
                     })
                     .catch((err) => {
-                        console.log('Welcome email error:', err)
+                        // ...removed dev artifact...
                     })
 
                 res.send({ status: true, message: "Request is successful." })
@@ -139,17 +139,17 @@ const signIn = (req, res) => {
                         res.send({ status: false, message: "Wrong credentials, please try again." })
                     } else {
                         let token = jwt.sign({ vendorId: vendor._id, role: "vendor" }, process.env.JWTsecret, { expiresIn: "1h" })
-                        console.log(token)
+                        // ...removed dev artifact...
                         res.send({ status: true, message: "Sign in successful", token })
                     }
                 })
             } else {
-                console.log("User does not exist")
+                // ...removed dev artifact...
                 res.send({ status: false, message: "User does not exist." })
             }
         })
         .catch((err) => {
-            console.log(err)
+            // ...removed dev artifact...
         })
 }
 

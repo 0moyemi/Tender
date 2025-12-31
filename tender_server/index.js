@@ -20,16 +20,16 @@ app.use("/admin", adminRouter)
 
 mongoose.connect(URI)
     .then(() => {
-        console.log(`Database connected successfully`)
+        // ...removed dev artifact...
     })
     .catch((err) => {
-        console.log(`Error connecting to database ${err}`)
+        // ...removed dev artifact...
     })
 
 app.listen(PORT, (err) => {
     if (err) {
-        console.log("An error occured.")
+        // ...removed dev artifact...
     } else {
-        console.log(`successfully connected to localhost ${PORT}`)
+        // ...removed dev artifact...
     }
 })

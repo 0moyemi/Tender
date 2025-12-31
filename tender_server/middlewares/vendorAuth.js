@@ -11,15 +11,15 @@ const vendorAuth = (req, res, next) => {
         ? authHeader.split(" ")[1]
         : authHeader
 
-    console.log("Auth header:", authHeader);
+    // ...removed dev artifact...
 
     jwt.verify(token, process.env.JWTsecret, (err, decoded) => {
         if (err) {
-            console.log("JWT verify error:", err);
+            // ...removed dev artifact...
             return res.status(401).send({ status: false, message: "Invalid or expired token" })
         }
 
-        console.log("Decoded payload:", decoded);
+        // ...removed dev artifact...
 
         if (decoded.role !== "vendor") {
             return res.status(403).send({ status: false, message: "Forbidden" })
