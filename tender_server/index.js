@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 4224
 const URI = process.env.URI
 const vendorRouter = require('./routes/vendor.route')
 const marketplaceRouter = require("./routes/marketplace.route")
-// const adminRouter = require("./routes/admin.route")
+const adminRouter = require("./routes/admin.route")
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
@@ -16,7 +16,7 @@ app.use(cors({
 }))
 app.use("/vendor", vendorRouter)
 app.use("/marketplace", marketplaceRouter)
-// app.use("/admin", adminRouter)
+app.use("/admin", adminRouter)
 
 mongoose.connect(URI)
     .then(() => {

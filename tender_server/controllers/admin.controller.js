@@ -1,5 +1,5 @@
 const admin = require("../models/admin.model")
-const vendor = require("../models/vendors.model")
+const vendor = require("../models/vendor.model")
 const jwt = require("jsonwebtoken")
 
 const adminLogin = (req, res) => {
