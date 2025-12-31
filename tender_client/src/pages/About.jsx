@@ -4,6 +4,17 @@ import { ArrowLeft, Mail, Phone, Smartphone } from "lucide-react"
 import { FaInstagram, FaTwitter, FaFacebook } from 'react-icons/fa'
 
 const About = () => {
+  const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+
+  React.useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
   return (
     <div className="min-vh-100">
       <nav className="navbar navbar-dark border-bottom border-secondary">
@@ -28,12 +39,8 @@ const About = () => {
             <h1 className="h2 text-white mb-4">🛒 About Tender</h1>
             <div className="card bg-dark border-secondary p-4 mb-4">
               <p className="text-white mb-3">
-                Tender is a simple, reliable marketplace that connects vendors and customers in one place.
+                Tender is a simple, reliable marketplace that connects vendors and customers in one place. Vendors can list their products and reach new buyers, and customers can easily discover and shop from our trusted sellers.
               </p>
-              <ul className="text-muted mb-3 ps-3">
-                <li>Vendors can list their products and reach new buyers.</li>
-                <li>Customers can easily discover and shop from trusted sellers.</li>
-              </ul>
               <p className="text-muted mb-3">
                 Our goal is a smooth, secure, and enjoyable experience for everyone.
               </p>
@@ -42,13 +49,23 @@ const About = () => {
                 Get the App (PWA)
               </h3>
               <p className="text-muted small mb-3">
-                Tender works as a Progressive Web App (PWA), so you can install it directly on your device—no app store needed.
+                Tender works as a Progressive Web App (PWA), so you can install it directly on your device. No app store needed.
               </p>
               <p className="text-muted small mb-3">
                 Installing the app gives you faster access, a cleaner interface, and an app-like experience. You can install it using your browser’s Install App option or the button below.
               </p>
               <div className="d-flex justify-content-center mt-3">
-                <button className="btn btn-danger d-flex align-items-center gap-2 px-4 py-2" onClick={() => window.prompt('To install, use your browser\'s Install App option!')}>
+                <button
+                  className="btn btn-danger d-flex align-items-center gap-2 px-4 py-2"
+                  onClick={() => {
+                    if (deferredPrompt) {
+                      deferredPrompt.prompt();
+                      deferredPrompt.userChoice.then(() => setDeferredPrompt(null));
+                    } else {
+                      window.alert('To install, use your browser\'s Install App option!');
+                    }
+                  }}
+                >
                   <span style={{ fontSize: '1.5rem' }}></span> Install Tender &#8595;
                 </button>
               </div>

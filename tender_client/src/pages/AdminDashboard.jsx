@@ -1,35 +1,121 @@
-import React from 'react'
-import { Link } from "react-router-dom"
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from "react-router-dom"
 import { LogOut, Users, Package, DollarSign, TrendingUp, Edit2 } from "lucide-react"
-import { useState } from "react"
+import axios from 'axios'
 
 const AdminDashboard = () => {
-  const stats = [
-    { label: "Total Vendors", value: "156", icon: Users, color: "primary" },
-    { label: "Total Products", value: "1,245", icon: Package, color: "info" },
-    { label: "Platform Revenue", value: "₦12.5M", icon: DollarSign, color: "success" },
-    { label: "Total Orders", value: "3,428", icon: TrendingUp, color: "warning" },
-  ]
-
-  const [vendors, setVendors] = useState([
-    { id: 1, businessName: "TechPro Store", ownerName: "John Doe", products: 24, sales: "₦450,000", status: "Active" },
-    {
-      id: 2,
-      businessName: "Fashion Hub",
-      ownerName: "Jane Smith",
-      products: 156,
-      sales: "₦1,200,000",
-      status: "Active",
-    },
-    {
-      id: 3,
-      businessName: "Home Essentials",
-      ownerName: "Mike Johnson",
-      products: 89,
-      sales: "₦780,000",
-      status: "Pending",
-    },
+  const [vendors, setvendors] = useState([])
+  const [stats, setStats] = useState([
+    { label: 'Vendors', value: 0, icon: Users, color: 'primary' },
+    { label: 'Revenue', value: '$0', icon: DollarSign, color: 'success' },
   ])
+  const [editingVendor, setEditingVendor] = useState(null)
+  const [editForm, setEditForm] = useState({ businessName: '', ownerName: '' })
+  const [showSuspendModal, setShowSuspendModal] = useState(false);
+  const [vendorToSuspend, setVendorToSuspend] = useState(null);
+  const navigate = useNavigate()
+
+  const getAdminHeader = () => {
+    const token = localStorage.getItem("adminToken")
+    if (!token) return {}
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  }
+
+  const fetchVendors = () => {
+    axios.get(`${import.meta.env.VITE_APP_API_URL}/admin/vendors`, getAdminHeader())
+      .then((res) => {
+        if (res.data.status) {
+          setvendors(res.data.message)
+        }
+      })
+      .catch((err) => {
+        if (err.response && err.response.status === 401) {
+          localStorage.removeItem('adminToken');
+          navigate('/admin/login');
+        } else {
+          console.log(err)
+        }
+      })
+  }
+
+  // Token check on mount
+  useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      navigate('/admin/login');
+      return;
+    }
+    // Optionally check expiry with jwt-decode here
+    fetchVendors();
+  }, [])
+
+  const deleteVendor = (_id) => {
+    axios.delete(`${import.meta.env.VITE_APP_API_URL}/admin/vendors/${_id}`, getAdminHeader())
+      .then((res) => {
+        if (res.data && res.data.status) {
+          setvendors(prev => prev.filter(v => v._id !== _id))
+        } else {
+          console.warn('deleteVendor: unexpected response', res.data)
+        }
+        closeSuspendModal();
+      })
+      .catch((err) => {
+        if (err.response && err.response.status === 401) {
+          localStorage.removeItem('adminToken');
+          navigate('/admin/login');
+        } else {
+          console.error('deleteVendor error:', err.response || err.message || err)
+        }
+        closeSuspendModal();
+      })
+  }
+
+  const openEdit = (vendor) => {
+    setEditingVendor(vendor);
+    setEditForm({ businessName: vendor.businessName, ownerName: vendor.ownerName });
+  }
+
+  const handleEditChange = (e) => {
+    setEditForm({ ...editForm, [e.target.name]: e.target.value });
+  }
+
+  const editVendor = () => {
+    if (!editingVendor) return;
+    axios.put(
+      `${import.meta.env.VITE_APP_API_URL}/admin/vendors/${editingVendor._id}`,
+      { ...editingVendor, ...editForm },
+      getAdminHeader()
+    )
+      .then((res) => {
+        if (res.data.status) {
+          setvendors(prev => prev.map(v => v._id === editingVendor._id ? { ...v, ...editForm } : v));
+          setEditingVendor(null);
+        }
+      })
+      .catch((err) => {
+        if (err.response && err.response.status === 401) {
+          localStorage.removeItem('adminToken');
+          navigate('/admin/login');
+        } else {
+          console.error('editVendor error:', err.response || err.message || err);
+        }
+      });
+  }
+
+  const openSuspendModal = (vendor) => {
+    setVendorToSuspend(vendor);
+    setShowSuspendModal(true);
+  };
+
+  const closeSuspendModal = () => {
+    setShowSuspendModal(false);
+    setVendorToSuspend(null);
+  };
+
   return (
     <div className="min-vh-100">
       <nav className="navbar navbar-dark border-bottom border-secondary">
@@ -60,20 +146,24 @@ const AdminDashboard = () => {
                   <label className="form-label text-white small">Business Name</label>
                   <input
                     type="text"
+                    name="businessName"
                     className="form-control bg-dark text-white border-secondary"
-                    defaultValue={editingVendor.businessName}
+                    value={editForm.businessName}
+                    onChange={handleEditChange}
                   />
                 </div>
                 <div className="col-md-6">
                   <label className="form-label text-white small">Owner Name</label>
                   <input
                     type="text"
+                    name="ownerName"
                     className="form-control bg-dark text-white border-secondary"
-                    defaultValue={editingVendor.ownerName}
+                    value={editForm.ownerName}
+                    onChange={handleEditChange}
                   />
                 </div>
                 <div className="col-12">
-                  <button className="btn btn-danger btn-sm px-4" onClick={() => setEditingVendor(null)}>
+                  <button className="btn btn-danger btn-sm px-4" onClick={editVendor}>
                     Save Changes
                   </button>
                   <button className="btn btn-outline-secondary btn-sm ms-2" onClick={() => setEditingVendor(null)}>
@@ -118,28 +208,22 @@ const AdminDashboard = () => {
                       <tr>
                         <th>Business Name</th>
                         <th>Owner</th>
-                        <th>Products</th>
-                        <th>Status</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {vendors.map((vendor) => (
-                        <tr key={vendor.id}>
+                        <tr key={vendor._id}>
                           <td>{vendor.businessName}</td>
                           <td>{vendor.ownerName}</td>
-                          <td>{vendor.products}</td>
-                          <td>
-                            <span className={`badge bg-${vendor.status === "Active" ? "success" : "warning"}`}>
-                              {vendor.status}
-                            </span>
-                          </td>
                           <td>
                             <div className="btn-group btn-group-sm">
-                              <button className="btn btn-outline-primary" onClick={() => setEditingVendor(vendor)}>
+                              <button className="btn btn-outline-primary" onClick={() => openEdit(vendor)}>
                                 <Edit2 size={14} />
                               </button>
-                              <button className="btn btn-outline-danger">Suspend</button>
+                              <button className="btn btn-outline-danger" onClick={() => openSuspendModal(vendor)}>
+                                Suspend
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -151,6 +235,27 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
+
+        {/* Suspend Confirmation Modal */}
+        {showSuspendModal && vendorToSuspend && (
+          <div className="modal fade show" style={{ display: 'block', background: 'rgba(0,0,0,0.5)' }} tabIndex="-1">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content bg-dark text-white border-danger">
+                <div className="modal-header border-danger">
+                  <h5 className="modal-title">Suspend Vendor</h5>
+                  <button type="button" className="btn-close btn-close-white" onClick={closeSuspendModal}></button>
+                </div>
+                <div className="modal-body">
+                  Are you sure you want to suspend <b>{vendorToSuspend.businessName}</b>?
+                </div>
+                <div className="modal-footer border-danger">
+                  <button type="button" className="btn btn-secondary" onClick={closeSuspendModal}>Cancel</button>
+                  <button type="button" className="btn btn-danger" onClick={() => deleteVendor(vendorToSuspend._id)}>Suspend</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

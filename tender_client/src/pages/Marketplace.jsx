@@ -8,6 +8,7 @@ const Marketplace = () => {
   const { cartCount, updateCartCount } = useContext(CartContext)
   const navigate = useNavigate()
   const [products, setproducts] = useState([])
+  const [loading, setLoading] = useState(true)
   const [search, setsearch] = useState('')
   const [selectCategory, setselectCategory] = useState('All Products')
   const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -31,6 +32,7 @@ const Marketplace = () => {
   }
 
   const fetchProducts = () => {
+    setLoading(true);
     axios.get(`${import.meta.env.VITE_APP_API_URL}/marketplace/products`)
       .then((res) => {
         if (res.data.status) {
@@ -41,6 +43,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err)
       })
+      .finally(() => setLoading(false));
   }
 
   useEffect(() => {
@@ -60,12 +63,9 @@ const Marketplace = () => {
     "Fashion",
     "Home & Living",
     "Sports",
-    "Books",
     "Beauty",
     "Toys",
     "Automotive",
-    "Food",
-    "Health",
     "Gadgets"
   ]
 
@@ -108,14 +108,18 @@ const Marketplace = () => {
                 )}
               </Link>
             </li>
-            <li className="mb-3">
-              <Link to="/checkout" className="text-decoration-none text-white d-flex align-items-center gap-2">
+            {/* <li className="mb-3">
+              <Link
+                to="/checkout"
+                className="text-decoration-none text-white d-flex align-items-center gap-2"
+                onClick={() => setShowSuccessModal(false)}
+              >
                 <CreditCard size={20} />
                 Checkout
               </Link>
-            </li>
+            </li> */}
             <li className="mb-3">
-              <Link to="/vendor/signin" className="text-decoration-none text-white d-flex align-items-center gap-2">
+              <Link to="/vendor/signup" className="text-decoration-none text-white d-flex align-items-center gap-2">
                 <UserPlus size={20} />
                 Become a Vendor
               </Link>
@@ -164,46 +168,55 @@ const Marketplace = () => {
           ))}
         </div>
 
-        {/* Product Grid */}
-        <div className="row g-3">
-          {filteredProducts.map((product) => (
-            <div key={product._id} className="col-6 col-lg-3">
-              <div
-                className="card bg-dark border-secondary h-100"
-                style={{ cursor: 'pointer' }}
-                onClick={() => navigate(`/product/${product._id}`)}
-              >
-                <img
-                  src={product.image || "/placeholder.svg"}
-                  className="card-img-top"
-                  alt={product.name}
-                  style={{ height: "200px", objectFit: "cover" }}
-                />
-                <div className="card-body d-flex flex-column">
-                  <h6 className="card-title text-white mb-1">{product.name}</h6>
-                  <p className="text-danger fw-bold mb-2">₦{product.price.toLocaleString()}</p>
-                  <p className="card-text small Products mb-3">{product.description}</p>
-                  <div className="mt-auto d-flex justify-content-between align-items-center">
-                    <button
-                      onClick={(e) => addToCart(e, product)}
-                      className="btn btn-danger btn-sm rounded-circle"
-                      style={{ width: "35px", height: "36px" }}
-                    >
-                      <ShoppingCart size={16} />
-                    </button>
-                    <Link
-                      to={`/product/${product._id}`}
-                      className="btn btn-outline-danger btn-sm rounded-pill px-3"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      View Details
-                    </Link>
+        {/* Product Grid or Loading */}
+        {loading ? (
+          <div className="d-flex flex-column align-items-center justify-content-center py-5">
+            <div className="spinner-border text-danger mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <div className="text-danger fw-bold">Hold on while we set things up...</div>
+          </div>
+        ) : (
+          <div className="row g-3">
+            {filteredProducts.map((product) => (
+              <div key={product._id} className="col-6 col-lg-3">
+                <div
+                  className="card bg-dark border-secondary h-100"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => navigate(`/product/${product._id}`)}
+                >
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    className="card-img-top"
+                    alt={product.name}
+                    style={{ height: "200px", objectFit: "cover" }}
+                  />
+                  <div className="card-body d-flex flex-column">
+                    <h6 className="card-title text-white mb-1">{product.name}</h6>
+                    <p className="text-danger fw-bold mb-2">₦{product.price.toLocaleString()}</p>
+                    <p className="card-text small Products mb-3">{product.description}</p>
+                    <div className="mt-auto d-flex justify-content-between align-items-center">
+                      <button
+                        onClick={(e) => addToCart(e, product)}
+                        className="btn btn-danger btn-sm rounded-circle"
+                        style={{ width: "35px", height: "36px" }}
+                      >
+                        <ShoppingCart size={16} />
+                      </button>
+                      <Link
+                        to={`/product/${product._id}`}
+                        className="btn btn-outline-danger btn-sm rounded-pill px-3"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        View Details
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Success Modal */}

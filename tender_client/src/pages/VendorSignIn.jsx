@@ -40,6 +40,8 @@ const VendorSignIn = () => {
           window.location.href = "/vendor/dashboard";
         } else {
           seterror(response.data.message || "Invalid email or password");
+          setloading(false);
+          setmessage("");
         }
       })
       .catch((err) => {
@@ -49,9 +51,10 @@ const VendorSignIn = () => {
         } else {
           seterror("Sign in failed. Please try again.");
         }
+        setloading(false);
+        setmessage("");
         console.log(err);
       })
-      .finally(false)
   }
 
   return (

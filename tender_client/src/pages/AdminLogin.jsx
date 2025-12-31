@@ -1,16 +1,32 @@
-import React from 'react'
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import React, { useState } from 'react'
+import { Link, useNavigate } from "react-router-dom"
 import { Mail, Lock, ArrowLeft, Shield } from "lucide-react"
+import axios from 'axios'
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const URL = `${import.meta.env.VITE_APP_API_URL}/admin/login`;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Admin sign in:", { email, password })
-  }
+    e.preventDefault();
+    setError("");
+    axios.post(URL, { email, password })
+      .then((response) => {
+        if (response.data && response.data.token) {
+          localStorage.adminToken = response.data.token;
+          navigate('/admin/dashboard');
+        } else {
+          setError(response.data.message || 'Login failed');
+        }
+      })
+      .catch((err) => {
+        setError(err.response?.data?.message || 'Login failed');
+      });
+  };
+
   return (
     <div className="min-vh-100 d-flex align-items-center justify-content-center p-3">
       <div className="w-100" style={{ maxWidth: "400px" }}>
@@ -19,8 +35,8 @@ const AdminLogin = () => {
           <h1 className="h3 text-white mb-2">Admin Access</h1>
           <p className="text-muted">Sign in to manage the platform</p>
         </div>
-
         <form onSubmit={handleSubmit} className="card bg-dark border-secondary p-4">
+          {error && <div className="alert alert-danger py-2 small">{error}</div>}
           <div className="mb-3">
             <label htmlFor="email" className="form-label text-white small">
               Admin Email
@@ -40,7 +56,6 @@ const AdminLogin = () => {
               />
             </div>
           </div>
-
           <div className="mb-4">
             <label htmlFor="password" className="form-label text-white small">
               Admin Password
@@ -60,11 +75,9 @@ const AdminLogin = () => {
               />
             </div>
           </div>
-
           <button type="submit" className="btn btn-danger w-100 mb-3">
             Admin Sign In
           </button>
-
           <div className="text-center">
             <Link to="/" className="text-muted small text-decoration-none d-inline-flex align-items-center gap-1">
               <ArrowLeft size={14} />
@@ -74,7 +87,7 @@ const AdminLogin = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AdminLogin
+export default AdminLogin;
