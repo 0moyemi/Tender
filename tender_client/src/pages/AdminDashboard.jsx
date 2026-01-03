@@ -1,9 +1,27 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { LogOut, Users, Package, DollarSign, TrendingUp, Edit2 } from "lucide-react"
 import axios from 'axios'
 
 const AdminDashboard = () => {
+  const location = useLocation();
+  // Scroll lock for suspend modal
+  useEffect(() => {
+    if (showSuspendModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showSuspendModal]);
+
+  // Clean up modal on route change
+  useEffect(() => {
+    setShowSuspendModal(false);
+    document.body.style.overflow = '';
+  }, [location.pathname]);
   const [vendors, setvendors] = useState([])
   const [stats, setStats] = useState([
     { label: 'Vendors', value: 0, icon: Users, color: 'primary' },

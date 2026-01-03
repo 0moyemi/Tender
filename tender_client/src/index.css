@@ -104,3 +104,9 @@ body {
   color: var(--primary-foreground) !important;
   opacity: 1 !important;
 }
+
+@media screen and (max-width: 402px) {
+    .marketplace-button-for-cart {
+      display: none;
+    }
+}

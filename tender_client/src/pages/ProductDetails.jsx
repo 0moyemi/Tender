@@ -1,16 +1,34 @@
 import React, { useContext, useEffect } from 'react'
 import { useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useLocation } from "react-router-dom"
 import { ArrowLeft, ShoppingCart, Plus, Minus, Menu } from "lucide-react"
 import axios from 'axios'
 import { CartContext } from '../context/CartContext'
 
 const ProductDetails = () => {
+  const location = useLocation();
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  // Scroll lock for modal
+  useEffect(() => {
+    if (showSuccessModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showSuccessModal]);
+
+  // Clean up modal on route change
+  useEffect(() => {
+    setShowSuccessModal(false);
+    document.body.style.overflow = '';
+  }, [location.pathname]);
   const { cartCount, updateCartCount } = useContext(CartContext)
   const { _id } = useParams()
   const [product, setproduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
-  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_APP_API_URL}/marketplace/products/${_id}`)
@@ -50,7 +68,6 @@ const ProductDetails = () => {
         <div className="container d-flex justify-content-between align-items-center">
           <Link to="/" className="navbar-brand p-0 m-0">
             <img src="https://i.postimg.cc/pVnM03Gg/New-Tender.png" width={80} className="navbar-brand mb-0 h1" alt="" />
-            <img src="/images/tender.png" alt="Tender" height="30" />
           </Link>
           <div className="d-flex align-items-center gap-3">
             <button
@@ -169,9 +186,23 @@ const ProductDetails = () => {
               </button>
             </div>
 
-            <Link to="/checkout" className="btn btn-outline-danger w-100">
+            <button
+              className="btn btn-outline-danger w-100"
+              onClick={() => {
+                const cart = JSON.parse(localStorage.getItem("cart")) || [];
+                const existing = cart.find(item => item._id === product._id);
+                if (existing) {
+                  existing.quantity += quantity;
+                } else {
+                  cart.push({ ...product, quantity });
+                }
+                localStorage.setItem("cart", JSON.stringify(cart));
+                updateCartCount(cart);
+                window.location.href = "/checkout";
+              }}
+            >
               Buy Now
-            </Link>
+            </button>
           </div>
         </div>
       </div>

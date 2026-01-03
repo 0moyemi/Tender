@@ -132,9 +132,19 @@ const Cart = () => {
                 <span className="text-white fw-bold">Total</span>
                 <span className="text-danger fw-bold h5 mb-0">₦{total.toLocaleString()}</span>
               </div>
-              <Link to="/checkout" className="btn btn-danger w-100 mb-2">
+              <button
+                className="btn btn-danger w-100 mb-2"
+                disabled={cart.length === 0}
+                onClick={() => {
+                  if (cart.length === 0) {
+                    alert('Your cart is empty. Add items before proceeding to checkout.');
+                  } else {
+                    window.location.href = '/checkout';
+                  }
+                }}
+              >
                 Proceed to Checkout
-              </Link>
+              </button>
               <Link to="/" className="btn btn-outline-danger w-100">
                 Continue Shopping
               </Link>

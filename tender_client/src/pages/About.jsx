@@ -66,7 +66,7 @@ const About = () => {
                     }
                   }}
                 >
-                  <span style={{ fontSize: '1.5rem' }}></span> Install Tender &#8595;
+                  <span style={{ fontSize: '1rem' }}>Install Tender</span> 
                 </button>
               </div>
             </div>

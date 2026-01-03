@@ -1,14 +1,32 @@
 import React, { useContext, useEffect } from 'react'
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { ArrowLeft, CreditCard } from "lucide-react"
 import { CartContext } from '../context/CartContext'
 
 const Checkout = () => {
+  const location = useLocation();
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  // Scroll lock for modal
+  useEffect(() => {
+    if (showSuccessModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showSuccessModal]);
+
+  // Clean up modal on route change
+  useEffect(() => {
+    setShowSuccessModal(false);
+    document.body.style.overflow = '';
+  }, [location.pathname]);
   const { updateCartCount } = useContext(CartContext)
   const navigate = useNavigate()
   const [cart, setCart] = useState([])
-  const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [trackingNumber, setTrackingNumber] = useState('')
   const [formData, setFormData] = useState({
     fullName: "",

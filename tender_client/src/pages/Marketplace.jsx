@@ -1,17 +1,36 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { Search, Menu, ShoppingCart, CreditCard, UserPlus, Info } from "lucide-react"
 import axios from 'axios'
 import { CartContext } from '../context/CartContext'
 
 const Marketplace = () => {
+  const location = useLocation();
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  useEffect(() => {
+    setShowSuccessModal(false);
+    document.body.style.overflow = '';
+  }, [location.pathname]);
+  
+  // Scroll lock for modal
+  useEffect(() => {
+    if (showSuccessModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showSuccessModal]);
+
+  // Clean up modal on route change
   const { cartCount, updateCartCount } = useContext(CartContext)
   const navigate = useNavigate()
   const [products, setproducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setsearch] = useState('')
   const [selectCategory, setselectCategory] = useState('All Products')
-  const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [addedProduct, setAddedProduct] = useState(null)
 
   const addToCart = (e, product) => {
@@ -198,7 +217,7 @@ const Marketplace = () => {
                     <div className="mt-auto d-flex justify-content-between align-items-center">
                       <button
                         onClick={(e) => addToCart(e, product)}
-                        className="btn btn-danger btn-sm rounded-circle"
+                        className="btn btn-danger btn-sm rounded-circle marketplace-button-for-cart"
                         style={{ width: "35px", height: "36px" }}
                       >
                         <ShoppingCart size={16} />
