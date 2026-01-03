@@ -12,7 +12,7 @@ const adminRouter = require("./routes/admin.route")
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors({
-    // origin: "https://tender-mvp-ten.vercel.app"
+    origin: "https://tender-mvp-ten.vercel.app"
 }))
 app.use("/vendor", vendorRouter)
 app.use("/marketplace", marketplaceRouter)
