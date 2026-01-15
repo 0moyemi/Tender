@@ -4,6 +4,7 @@ import { Link, useParams, useLocation } from "react-router-dom"
 import { ArrowLeft, ShoppingCart, Plus, Minus, Menu } from "lucide-react"
 import axios from 'axios'
 import { CartContext } from '../context/CartContext'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const ProductDetails = () => {
   const location = useLocation();
@@ -63,7 +64,13 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="min-vh-100">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.25 }}
+      className="min-vh-100"
+    >
       <nav className="navbar navbar-dark border-bottom border-secondary">
         <div className="container d-flex justify-content-between align-items-center">
           <Link to="/" className="navbar-brand p-0 m-0">
@@ -208,25 +215,35 @@ const ProductDetails = () => {
       </div>
 
       {/* Success Modal */}
-      <div className={`modal fade ${showSuccessModal ? 'show' : ''}`} style={{ display: showSuccessModal ? 'block' : 'none' }} tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content bg-dark border-secondary">
-            <div className="modal-header border-secondary">
-              <h5 className="modal-title text-white">Success!</h5>
-              <button type="button" className="btn-close btn-close-white" onClick={() => setShowSuccessModal(false)}></button>
-            </div>
-            <div className="modal-body text-white">
-              <p className="mb-0">{product?.name} has been added to your cart.</p>
-            </div>
-            <div className="modal-footer border-secondary">
-              <button type="button" className="btn btn-outline-secondary" onClick={() => setShowSuccessModal(false)}>Continue Shopping</button>
-              <Link to="/cart" className="btn btn-danger" onClick={() => setShowSuccessModal(false)}>View Cart</Link>
+      <AnimatePresence>
+        {showSuccessModal && (
+          <div className="modal" style={{ display: 'block' }} tabIndex="-1">
+            <div className="modal-backdrop fade show" onClick={() => setShowSuccessModal(false)}></div>
+            <div className="modal-dialog modal-dialog-centered" style={{ position: 'relative', zIndex: 1050 }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.2 }}
+                className="modal-content bg-dark border-secondary"
+              >
+                <div className="modal-header border-secondary">
+                  <h5 className="modal-title text-white">Success!</h5>
+                  <button type="button" className="btn-close btn-close-white" onClick={() => setShowSuccessModal(false)}></button>
+                </div>
+                <div className="modal-body text-white">
+                  <p className="mb-0">{product?.name} has been added to your cart.</p>
+                </div>
+                <div className="modal-footer border-secondary">
+                  <button type="button" className="btn btn-outline-secondary" onClick={() => setShowSuccessModal(false)}>Continue Shopping</button>
+                  <Link to="/cart" className="btn btn-danger" onClick={() => setShowSuccessModal(false)}>View Cart</Link>
+                </div>
+              </motion.div>
             </div>
           </div>
-        </div>
-      </div>
-      {showSuccessModal && <div className="modal-backdrop fade show" onClick={() => setShowSuccessModal(false)}></div>}
-    </div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   )
 }
 

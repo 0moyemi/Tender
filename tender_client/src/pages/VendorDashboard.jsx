@@ -3,6 +3,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { LogOut } from "lucide-react"
 import axios from 'axios'
+import { motion } from 'framer-motion'
 
 const VendorDashboard = () => {
   const categories = [
@@ -165,7 +166,13 @@ const VendorDashboard = () => {
     })
   }
   return (
-    <div className="min-vh-100">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.25 }}
+      className="min-vh-100"
+    >
       <nav className="navbar navbar-dark border-bottom border-secondary">
         <div className="container-fluid d-flex justify-content-between align-items-center">
           <Link to="/" className="navbar-brand p-0 m-0">
@@ -337,10 +344,18 @@ const VendorDashboard = () => {
                             <td className="text-danger">₦{Number(product.price).toLocaleString()}</td>
                             <td>
                               <div className="btn-group btn-group-sm">
-                                <button className="btn btn-outline-primary" onClick={() => startEdit(product)}>
+                                <button
+                                  className="btn btn-outline-primary"
+                                  onClick={() => startEdit(product)}
+                                  disabled={editingId !== null}
+                                >
                                   Edit
                                 </button>
-                                <button className="btn btn-outline-danger" onClick={() => deleteProduct(product._id)}>
+                                <button
+                                  className="btn btn-outline-danger"
+                                  onClick={() => deleteProduct(product._id)}
+                                  disabled={editingId !== null}
+                                >
                                   Delete
                                 </button>
                               </div>
@@ -356,7 +371,7 @@ const VendorDashboard = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

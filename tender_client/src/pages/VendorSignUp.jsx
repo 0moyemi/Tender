@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { Mail, Lock, User, ArrowLeft, Building } from "lucide-react"
 import axios from 'axios'
+import { motion } from 'framer-motion'
 
 const VendorSignUp = () => {
   // Removed global keydown event for Enter key for SPA best practice
@@ -90,7 +91,13 @@ const VendorSignUp = () => {
   }
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center p-3">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.25 }}
+      className="min-vh-100 d-flex align-items-center justify-content-center p-3"
+    >
       <div className="w-100" style={{ maxWidth: "400px" }}>
         <div className="mb-4">
           <Link
@@ -237,7 +244,7 @@ const VendorSignUp = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

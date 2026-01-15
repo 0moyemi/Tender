@@ -3,6 +3,7 @@ import { useState } from "react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import { ArrowLeft, CreditCard } from "lucide-react"
 import { CartContext } from '../context/CartContext'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const Checkout = () => {
   const location = useLocation();
@@ -66,7 +67,13 @@ const Checkout = () => {
     setShowSuccessModal(true)
   }
   return (
-    <div className="min-vh-100">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.25 }}
+      className="min-vh-100"
+    >
       <nav className="navbar navbar-dark border-bottom border-secondary">
         <div className="container">
           <Link
@@ -236,31 +243,41 @@ const Checkout = () => {
       </div>
 
       {/* Order Success Modal */}
-      <div className={`modal fade ${showSuccessModal ? 'show' : ''}`} style={{ display: showSuccessModal ? 'block' : 'none' }} tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content bg-dark border-secondary">
-            <div className="modal-header border-secondary">
-              <h5 className="modal-title text-white">Order Confirmed!🎉</h5>
-              <button type="button" className="btn-close btn-close-white" onClick={() => { setShowSuccessModal(false); navigate('/'); }}></button>
-            </div>
-            <div className="modal-body text-white">
-              <p className="mb-3">Thank you for shopping on <strong>Tender!</strong> Your purchase has been confirmed.</p>
-              <div className="card bg-secondary bg-opacity-25 border-0 p-3 mb-3">
-                <p className="mb-1 small text-muted">Tracking Number:</p>
-                <p className="mb-0 h5 text-danger">{trackingNumber}</p>
-              </div>
-              <p className="mb-2"><strong>Estimated Delivery:</strong> 24-48 hours</p>
-              <p className="mb-2"><strong>Confirmation:</strong> Check your email for order details and updates.</p> <br />
-              <p className="mb-0 small text-muted">Visit our <Link to="/about" className="text-danger" onClick={() => setShowSuccessModal(false)}>Contact page</Link> for any issues or questions.</p>
-            </div>
-            <div className="modal-footer border-secondary">
-              <button type="button" className="btn btn-outline-danger" onClick={() => { setShowSuccessModal(false); navigate('/'); }}>Continue Shopping</button>
+      <AnimatePresence>
+        {showSuccessModal && (
+          <div className="modal" style={{ display: 'block' }} tabIndex="-1">
+            <div className="modal-backdrop fade show" onClick={() => { setShowSuccessModal(false); navigate('/'); }}></div>
+            <div className="modal-dialog modal-dialog-centered" style={{ position: 'relative', zIndex: 1050 }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.2 }}
+                className="modal-content bg-dark border-secondary"
+              >
+                <div className="modal-header border-secondary">
+                  <h5 className="modal-title text-white">Order Confirmed!🎉</h5>
+                  <button type="button" className="btn-close btn-close-white" onClick={() => { setShowSuccessModal(false); navigate('/'); }}></button>
+                </div>
+                <div className="modal-body text-white">
+                  <p className="mb-3">Thank you for shopping on <strong>Tender!</strong> Your purchase has been confirmed.</p>
+                  <div className="card bg-secondary bg-opacity-25 border-0 p-3 mb-3">
+                    <p className="mb-1 small text-muted">Tracking Number:</p>
+                    <p className="mb-0 h5 text-danger">{trackingNumber}</p>
+                  </div>
+                  <p className="mb-2"><strong>Estimated Delivery:</strong> 24-48 hours</p>
+                  <p className="mb-2"><strong>Confirmation:</strong> Check your email for order details and updates.</p> <br />
+                  <p className="mb-0 small text-muted">Visit our <Link to="/about" className="text-danger" onClick={() => setShowSuccessModal(false)}>Contact page</Link> for any issues or questions.</p>
+                </div>
+                <div className="modal-footer border-secondary">
+                  <button type="button" className="btn btn-outline-danger" onClick={() => { setShowSuccessModal(false); navigate('/'); }}>Continue Shopping</button>
+                </div>
+              </motion.div>
             </div>
           </div>
-        </div>
-      </div>
-      {showSuccessModal && <div className="modal-backdrop fade show" onClick={() => { setShowSuccessModal(false); navigate('/'); }}></div>}
-    </div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   )
 }
 

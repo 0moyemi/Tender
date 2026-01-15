@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { Mail, Lock, ArrowLeft, Shield } from "lucide-react"
 import axios from 'axios'
+import { motion } from 'framer-motion'
 
 const AdminLogin = () => {
   const URL = `${import.meta.env.VITE_APP_API_URL}/admin/login`;
@@ -28,7 +29,13 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center p-3">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.25 }}
+      className="min-vh-100 d-flex align-items-center justify-content-center p-3"
+    >
       <div className="w-100" style={{ maxWidth: "400px" }}>
         <div className="mb-4 text-center">
           <Shield className="text-danger mb-3" size={48} />
@@ -86,7 +93,7 @@ const AdminLogin = () => {
           </div>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

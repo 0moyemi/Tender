@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import { LogOut, Users, Package, DollarSign, TrendingUp, Edit2 } from "lucide-react"
 import axios from 'axios'
+import { motion } from 'framer-motion'
 
 const AdminDashboard = () => {
   const location = useLocation();
@@ -135,7 +136,13 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-vh-100">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.25 }}
+      className="min-vh-100"
+    >
       <nav className="navbar navbar-dark border-bottom border-secondary">
         <div className="container-fluid">
           <Link to="/" className="navbar-brand p-0 m-0">
@@ -275,7 +282,7 @@ const AdminDashboard = () => {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }
 

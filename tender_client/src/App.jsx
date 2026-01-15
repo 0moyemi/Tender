@@ -12,25 +12,28 @@ import Marketplace from './pages/Marketplace'
 import ProductDetails from './pages/ProductDetails'
 import AdminLogin from './pages/AdminLogin'
 import { CartProvider } from './context/CartContext'
+import { AnimatePresence } from 'framer-motion'
 
 function App() {
   let token = localStorage.token;
 
   return (
-    <CartProvider>
-      <Routes>
-        <Route path="/about" element={<About />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/" element={<Marketplace />} />
-        <Route path="/product/:_id" element={<ProductDetails />} />
-        <Route path="/vendor/dashboard" element={token ? <VendorDashboard /> : <Navigate to={"/vendor/signin"} />} />
-        <Route path="/vendor/signin" element={<VendorSignIn />} />
-        <Route path="/vendor/signup" element={<VendorSignUp />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-      </Routes>
-    </CartProvider>
+    <AnimatePresence mode='wait'>
+      <CartProvider>
+        <Routes>
+          <Route path="/about" element={<About />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/" element={<Marketplace />} />
+          <Route path="/product/:_id" element={<ProductDetails />} />
+          <Route path="/vendor/dashboard" element={token ? <VendorDashboard /> : <Navigate to={"/vendor/signin"} />} />
+          <Route path="/vendor/signin" element={<VendorSignIn />} />
+          <Route path="/vendor/signup" element={<VendorSignUp />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+        </Routes>
+      </CartProvider>
+    </AnimatePresence>
   )
 }
 

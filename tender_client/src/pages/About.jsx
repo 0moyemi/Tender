@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from "react-router-dom"
 import { ArrowLeft, Mail, Phone, Smartphone } from "lucide-react"
 import { FaInstagram, FaTwitter, FaFacebook } from 'react-icons/fa'
+import { motion } from 'framer-motion'
 
 const About = () => {
   const [deferredPrompt, setDeferredPrompt] = React.useState(null);
@@ -16,7 +17,13 @@ const About = () => {
   }, []);
 
   return (
-    <div className="min-vh-100">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.25 }}
+      className="min-vh-100"
+    >
       <nav className="navbar navbar-dark border-bottom border-secondary">
         <div className="container d-flex justify-content-between align-items-center">
           <Link to="/" className="navbar-brand p-0 m-0">
@@ -66,7 +73,7 @@ const About = () => {
                     }
                   }}
                 >
-                  <span style={{ fontSize: '1rem' }}>Install Tender</span> 
+                  <span style={{ fontSize: '1rem' }}>Install Tender</span>
                 </button>
               </div>
             </div>
@@ -112,7 +119,7 @@ const About = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

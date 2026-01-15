@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom"
 import { Search, Menu, ShoppingCart, CreditCard, UserPlus, Info } from "lucide-react"
 import axios from 'axios'
 import { CartContext } from '../context/CartContext'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const Marketplace = () => {
   const location = useLocation();
@@ -11,7 +12,7 @@ const Marketplace = () => {
     setShowSuccessModal(false);
     document.body.style.overflow = '';
   }, [location.pathname]);
-  
+
   // Scroll lock for modal
   useEffect(() => {
     if (showSuccessModal) {
@@ -89,7 +90,13 @@ const Marketplace = () => {
   ]
 
   return (
-    <div className="min-vh-100">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.25 }}
+      className="min-vh-100"
+    >
       {/* Sticky Navbar */}
       <nav className="navbar navbar-dark sticky-top border-bottom border-secondary">
         <div className="container-fluid">
@@ -189,11 +196,83 @@ const Marketplace = () => {
 
         {/* Product Grid or Loading */}
         {loading ? (
-          <div className="d-flex flex-column align-items-center justify-content-center py-5">
-            <div className="spinner-border text-danger mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
-              <span className="visually-hidden">Loading...</span>
-            </div>
-            <div className="text-danger fw-bold">Hold on while we set things up...</div>
+          <div className="row g-3">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="col-6 col-lg-3">
+                <div className="card bg-dark border-secondary h-100">
+                  <motion.div
+                    initial={{ opacity: 0.6 }}
+                    animate={{ opacity: [0.6, 1, 0.6] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    style={{
+                      height: "200px",
+                      backgroundColor: "#2d2d2d",
+                      borderRadius: "4px 4px 0 0"
+                    }}
+                  />
+                  <div className="card-body">
+                    <motion.div
+                      initial={{ opacity: 0.6 }}
+                      animate={{ opacity: [0.6, 1, 0.6] }}
+                      transition={{ duration: 1.5, repeat: Infinity, delay: 0.1 }}
+                      style={{
+                        height: "20px",
+                        backgroundColor: "#2d2d2d",
+                        borderRadius: "4px",
+                        marginBottom: "8px"
+                      }}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0.6 }}
+                      animate={{ opacity: [0.6, 1, 0.6] }}
+                      transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+                      style={{
+                        height: "16px",
+                        backgroundColor: "#2d2d2d",
+                        borderRadius: "4px",
+                        marginBottom: "12px",
+                        width: "60%"
+                      }}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0.6 }}
+                      animate={{ opacity: [0.6, 1, 0.6] }}
+                      transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
+                      style={{
+                        height: "40px",
+                        backgroundColor: "#2d2d2d",
+                        borderRadius: "4px",
+                        marginBottom: "12px"
+                      }}
+                    />
+                    <div className="d-flex justify-content-between align-items-center">
+                      <motion.div
+                        initial={{ opacity: 0.6 }}
+                        animate={{ opacity: [0.6, 1, 0.6] }}
+                        transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
+                        style={{
+                          width: "35px",
+                          height: "36px",
+                          backgroundColor: "#2d2d2d",
+                          borderRadius: "50%"
+                        }}
+                      />
+                      <motion.div
+                        initial={{ opacity: 0.6 }}
+                        animate={{ opacity: [0.6, 1, 0.6] }}
+                        transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
+                        style={{
+                          width: "100px",
+                          height: "32px",
+                          backgroundColor: "#2d2d2d",
+                          borderRadius: "20px"
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="row g-3">
@@ -239,25 +318,35 @@ const Marketplace = () => {
       </div>
 
       {/* Success Modal */}
-      <div className={`modal fade ${showSuccessModal ? 'show' : ''}`} style={{ display: showSuccessModal ? 'block' : 'none' }} tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content bg-dark border-secondary">
-            <div className="modal-header border-secondary">
-              <h5 className="modal-title text-white">Success!</h5>
-              <button type="button" className="btn-close btn-close-white" onClick={() => setShowSuccessModal(false)}></button>
-            </div>
-            <div className="modal-body text-white">
-              <p className="mb-0">{addedProduct?.name} has been added to your cart.</p>
-            </div>
-            <div className="modal-footer border-secondary">
-              <button type="button" className="btn btn-outline-secondary" onClick={() => setShowSuccessModal(false)}>Continue Shopping</button>
-              <Link to="/cart" className="btn btn-danger" onClick={() => setShowSuccessModal(false)}>View Cart</Link>
+      <AnimatePresence>
+        {showSuccessModal && (
+          <div className="modal" style={{ display: 'block' }} tabIndex="-1">
+            <div className="modal-backdrop fade show" onClick={() => setShowSuccessModal(false)}></div>
+            <div className="modal-dialog modal-dialog-centered" style={{ position: 'relative', zIndex: 1050 }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.2 }}
+                className="modal-content bg-dark border-secondary"
+              >
+                <div className="modal-header border-secondary">
+                  <h5 className="modal-title text-white">Added to cart!</h5>
+                  <button type="button" className="btn-close btn-close-white" onClick={() => setShowSuccessModal(false)}></button>
+                </div>
+                <div className="modal-body text-white">
+                  <p className="mb-0">{addedProduct?.name} has been added to your cart.</p>
+                </div>
+                <div className="modal-footer border-secondary">
+                  <button type="button" className="btn btn-outline-secondary" onClick={() => setShowSuccessModal(false)}>Continue Shopping</button>
+                  <Link to="/cart" className="btn btn-danger" onClick={() => setShowSuccessModal(false)}>View Cart</Link>
+                </div>
+              </motion.div>
             </div>
           </div>
-        </div>
-      </div>
-      {showSuccessModal && <div className="modal-backdrop fade show" onClick={() => setShowSuccessModal(false)}></div>}
-    </div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   )
 }
 

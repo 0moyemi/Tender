@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from "react-router-dom"
 import { ArrowLeft, Trash2, Plus, Minus } from "lucide-react"
 import { CartContext } from '../context/CartContext'
+import { motion } from 'framer-motion'
 
 const Cart = () => {
   const { updateCartCount } = useContext(CartContext)
@@ -51,7 +52,13 @@ const Cart = () => {
   const total = subtotal + shipping
 
   return (
-    <div className="min-vh-100">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.25 }}
+      className="min-vh-100"
+    >
       <nav className="navbar navbar-dark border-bottom border-secondary">
         <div className="container">
           <Link
@@ -171,7 +178,7 @@ const Cart = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
